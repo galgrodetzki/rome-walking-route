@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rome on Foot — The Rome Max Tour (3 legs)</title>
+<style>
+  :root {
+    --terracotta: #c0563b;
+    --terracotta-dark: #b14a30;
+    --teal: #1f6f78;
+    --teal-dark: #18585f;
+    --ink: #2b2b2b;
+    --cream: #fbf7f4;
+    --teal-tint: #eef5f5;
+    --teal-border: #d7e6e6;
+    --line: #e2e2e2;
+    --muted: #7a6a60;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    margin: 0;
+    background: linear-gradient(160deg, #fdf8f5 0%, #f1f6f6 100%);
+    background-attachment: fixed;
+    padding: 28px 16px 56px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+
+  /* Cover */
+  .cover { text-align: center; padding: 18px 0 22px; border-bottom: 3px solid var(--terracotta); margin-bottom: 22px; }
+  .cover .flag { font-size: 40px; line-height: 1; }
+  h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(28px, 6vw, 40px); margin: 8px 0 4px; color: var(--terracotta); letter-spacing: .5px; }
+  .cover .sub { font-size: clamp(14px, 3.4vw, 18px); color: var(--teal); font-weight: 600; margin: 2px 0; }
+  .cover .tag { font-style: italic; color: var(--muted); font-size: 14px; margin-top: 8px; }
+
+  /* Leg nav */
+  .legnav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 0 0 26px; }
+  .legnav a { text-decoration: none; font-weight: 600; font-size: 14px; color: var(--teal); background: var(--teal-tint); border: 1px solid var(--teal-border); border-radius: 999px; padding: 8px 15px; }
+  .legnav a:hover { background: #e0eeee; }
+
+  /* Leg card */
+  .leg { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px 20px 22px; margin: 0 0 26px; box-shadow: 0 4px 16px rgba(0,0,0,.05); scroll-margin-top: 14px; }
+  .leg-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--terracotta); padding-bottom: 12px; margin-bottom: 16px; }
+  .leg-num { font-family: Georgia, serif; font-size: 14px; font-weight: 700; color: #fff; background: var(--terracotta); border-radius: 999px; padding: 4px 13px; white-space: nowrap; }
+  .leg-title { font-family: Georgia, serif; font-size: clamp(17px, 3.6vw, 21px); color: var(--teal); font-weight: 700; }
+
+  /* Stat cards */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 0 0 18px; }
+  .stat { background: var(--cream); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; }
+  .stat .num { font-family: Georgia, serif; font-size: 20px; color: var(--terracotta-dark); font-weight: 700; }
+  .stat .lbl { font-size: 11.5px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-top: 3px; }
+
+  /* Map */
+  .map-card { border: 1px solid var(--teal-border); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 16px rgba(31,111,120,.10); margin: 0 0 14px; }
+  .map-card iframe { display: block; width: 100%; height: clamp(400px, 60vh, 560px); border: 0; }
+  .map-actions { text-align: center; margin: 0 0 6px; }
+  .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-block; background: var(--terracotta); color: #fff; text-decoration: none; font-weight: 600; padding: 11px 20px; border-radius: 999px; box-shadow: 0 2px 8px rgba(192,86,59,.30); transition: background .15s ease, transform .15s ease; }
+  .btn:hover { background: var(--terracotta-dark); transform: translateY(-1px); }
+  .btn-map { background: var(--teal); box-shadow: 0 2px 8px rgba(31,111,120,.30); }
+  .btn-map:hover { background: var(--teal-dark); }
+  .map-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  /* Waypoints */
+  h3.route-h { font-family: Georgia, serif; font-size: 15px; color: var(--teal); margin: 18px 0 10px; }
+  ol.route { list-style: none; counter-reset: stop; margin: 0; padding: 0; }
+  ol.route li { counter-increment: stop; position: relative; padding: 11px 14px 11px 52px; margin: 0 0 8px; background: var(--cream); border-left: 4px solid var(--terracotta); border-radius: 8px; }
+  ol.route li::before { content: counter(stop); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: #fff; font-family: Georgia, serif; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  ol.route li .stop-name { font-weight: 700; color: #222; }
+  ol.route li .stop-desc { color: var(--muted); font-size: 14px; }
+  ol.route li.endpoint::before { background: var(--terracotta); }
+
+  .totals { text-align: center; background: var(--teal-tint); border: 1px solid var(--teal-border); border-radius: 12px; padding: 12px 16px; margin: 0 0 24px; font-size: 14px; color: var(--teal); font-weight: 600; }
+  .closing { text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 18px; color: var(--terracotta); margin: 30px 0 6px; }
+  .credit { text-align: center; font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .credit a { color: var(--teal); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="cover">
+      <div class="flag">🥾🇮🇹</div>
+      <h1>Rome on Foot</h1>
+      <div class="sub">The Rome Max Tour · 3 legs</div>
+      <div class="tag">Vatican to Piazza del Popolo, split into three walks · ~15.6 km total · Italy, June 30 – July 9, 2026</div>
+    </div>
+
+    <div class="totals">The three legs chain together into one grand sweep of Rome — finish one and the next picks up nearby. Walk them all, or pick a leg a day.</div>
+
+    <div class="legnav">
+      <a href="#leg1">① Vatican → Circus Maximus</a>
+      <a href="#leg2">② Keyhole → Campidoglio</a>
+      <a href="#leg3">③ Piazza Venezia → Popolo</a>
+    </div>
+
+    <!-- LEG 1 -->
+    <section class="leg" id="leg1">
+      <div class="leg-head">
+        <span class="leg-num">LEG 1</span>
+        <span class="leg-title">Vatican → Circus Maximus</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">6.1 km</div><div class="lbl">Distance</div></div>
+        <div class="stat"><div class="num">~1h 37m</div><div class="lbl">Walking time</div></div>
+        <div class="stat"><div class="num">+60/−60 m</div><div class="lbl">Elevation</div></div>
+        <div class="stat"><div class="num">~3.8</div><div class="lbl">km/h</div></div>
+      </div>
+      <div class="map-card">
+        <iframe src="https://www.komoot.com/tour/1984612556/embed?share_token=aof42rs1yM2wwWovP9byDjoJI0pyKFRCuvFrYdExftCnDKY696&amp;layout=classic&amp;profile=1"
+                title="Komoot map — Leg 1, Vatican to Circus Maximus" loading="lazy" allowfullscreen scrolling="no"></iframe>
+      </div>
+      <div class="map-actions">
+        <div class="btn-row">
+          <a class="btn" href="https://www.komoot.com/tour/1984612556?share_token=aof42rs1yM2wwWovP9byDjoJI0pyKFRCuvFrYdExftCnDKY696" target="_blank" rel="noopener">Open in Komoot ↗</a>
+          <a class="btn btn-map" href="https://www.google.com/maps/dir/?api=1&amp;origin=St.%20Peter%27s%20Basilica%2C%20Rome&amp;destination=Circus%20Maximus%2C%20Rome&amp;travelmode=walking&amp;waypoints=Castel%20Sant%27Angelo%2C%20Rome%7CPonte%20Sant%27Angelo%2C%20Rome%7CPiazza%20Navona%2C%20Rome%7CCampo%20de%27%20Fiori%2C%20Rome%7CTeatro%20di%20Marcello%2C%20Rome%7CIsola%20Tiberina%2C%20Rome%7CBocca%20della%20Verit%C3%A0%2C%20Rome" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>
+        </div>
+        <div class="map-note">Google Maps opens a walking route through all 9 stops — tap <strong>Start</strong> for turn-by-turn.</div>
+      </div>
+      <h3 class="route-h">The route, step by step</h3>
+      <ol class="route">
+        <li class="endpoint"><span class="stop-name">St. Peter's Basilica</span> — <span class="stop-desc">the start; the Vatican's great dome</span></li>
+        <li><span class="stop-name">Castel Sant'Angelo</span> — <span class="stop-desc">Hadrian's riverside fortress</span></li>
+        <li><span class="stop-name">Ponte Sant'Angelo</span> — <span class="stop-desc">the angel-lined bridge over the Tiber</span></li>
+        <li><span class="stop-name">Piazza Navona</span> — <span class="stop-desc">Bernini's Fountain of the Four Rivers</span></li>
+        <li><span class="stop-name">Campo de' Fiori</span> — <span class="stop-desc">the lively market square</span></li>
+        <li><span class="stop-name">Theatre of Marcellus</span> — <span class="stop-desc">the ancient "mini-Colosseum"</span></li>
+        <li><span class="stop-name">Tiber Island</span> — <span class="stop-desc">the little island midstream</span></li>
+        <li><span class="stop-name">Mouth of Truth</span> — <span class="stop-desc">Bocca della Verità at Santa Maria in Cosmedin</span></li>
+        <li class="endpoint"><span class="stop-name">Circus Maximus</span> — <span class="stop-desc">the finish; Rome's ancient chariot track</span></li>
+      </ol>
+    </section>
+
+    <!-- LEG 2 -->
+    <section class="leg" id="leg2">
+      <div class="leg-head">
+        <span class="leg-num">LEG 2</span>
+        <span class="leg-title">Aventine Keyhole → Campidoglio</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">5.6 km</div><div class="lbl">Distance</div></div>
+        <div class="stat"><div class="num">~1h 4m</div><div class="lbl">Walking time</div></div>
+        <div class="stat"><div class="num">+50/−70 m</div><div class="lbl">Elevation</div></div>
+        <div class="stat"><div class="num">~5.3</div><div class="lbl">km/h</div></div>
+      </div>
+      <div class="map-card">
+        <iframe src="https://www.komoot.com/tour/1987811523/embed?share_token=aoBrhf8cMYDmKULkM9HMGNjLso6V17LCKcMEgO5Wpv2u87HajK&amp;layout=classic&amp;profile=1"
+                title="Komoot map — Leg 2, Keyhole to Campidoglio" loading="lazy" allowfullscreen scrolling="no"></iframe>
+      </div>
+      <div class="map-actions">
+        <div class="btn-row">
+          <a class="btn" href="https://www.komoot.com/tour/1987811523?share_token=aoBrhf8cMYDmKULkM9HMGNjLso6V17LCKcMEgO5Wpv2u87HajK" target="_blank" rel="noopener">Open in Komoot ↗</a>
+          <a class="btn btn-map" href="https://www.google.com/maps/dir/?api=1&amp;origin=Piazza%20dei%20Cavalieri%20di%20Malta%2C%20Roma&amp;destination=Piazza%20del%20Campidoglio%2C%20Roma&amp;travelmode=walking" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>
+        </div>
+        <div class="map-note">A recorded track with no named stops in between — Google Maps routes you start → finish on foot.</div>
+      </div>
+      <h3 class="route-h">Start &amp; finish</h3>
+      <ol class="route">
+        <li class="endpoint"><span class="stop-name">Aventine Keyhole</span> — <span class="stop-desc">the start; the Knights of Malta's secret view of St. Peter's dome</span></li>
+        <li class="endpoint"><span class="stop-name">Piazza del Campidoglio</span> — <span class="stop-desc">the finish; Michelangelo's square atop the Capitoline</span></li>
+      </ol>
+    </section>
+
+    <!-- LEG 3 -->
+    <section class="leg" id="leg3">
+      <div class="leg-head">
+        <span class="leg-num">LEG 3</span>
+        <span class="leg-title">Piazza Venezia → Piazza del Popolo</span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">3.9 km</div><div class="lbl">Distance</div></div>
+        <div class="stat"><div class="num">~47 min</div><div class="lbl">Walking time</div></div>
+        <div class="stat"><div class="num">+50/−50 m</div><div class="lbl">Elevation</div></div>
+        <div class="stat"><div class="num">~5.0</div><div class="lbl">km/h</div></div>
+      </div>
+      <div class="map-card">
+        <iframe src="https://www.komoot.com/tour/1988635337/embed?share_token=auZn6PlbjrvHNhYNfy4TFHc7f1O7ye5pNCqZXNfeJfrlKzv3FW&amp;layout=classic&amp;profile=1"
+                title="Komoot map — Leg 3, Piazza Venezia to Piazza del Popolo" loading="lazy" allowfullscreen scrolling="no"></iframe>
+      </div>
+      <div class="map-actions">
+        <div class="btn-row">
+          <a class="btn" href="https://www.komoot.com/tour/1988635337?share_token=auZn6PlbjrvHNhYNfy4TFHc7f1O7ye5pNCqZXNfeJfrlKzv3FW" target="_blank" rel="noopener">Open in Komoot ↗</a>
+          <a class="btn btn-map" href="https://www.google.com/maps/dir/?api=1&amp;origin=Piazza%20Venezia%2C%20Roma&amp;destination=Piazza%20del%20Popolo%2C%20Roma&amp;travelmode=walking" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>
+        </div>
+        <div class="map-note">A recorded track with no named stops in between — Google Maps routes you start → finish on foot.</div>
+      </div>
+      <h3 class="route-h">Start &amp; finish</h3>
+      <ol class="route">
+        <li class="endpoint"><span class="stop-name">Piazza Venezia</span> — <span class="stop-desc">the start; the great white Vittoriano monument</span></li>
+        <li class="endpoint"><span class="stop-name">Piazza del Popolo</span> — <span class="stop-desc">the finish; the grand oval gate-square with its obelisk</span></li>
+      </ol>
+    </section>
+
+    <div class="closing">Lace up — Rome is best on foot. 🥾💛</div>
+    <div class="credit">Routes via Komoot · maps open in Google Maps for turn-by-turn walking navigation</div>
+
+  </div>
+</body>
+</html>
